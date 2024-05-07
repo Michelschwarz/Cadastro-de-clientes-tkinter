@@ -16,34 +16,32 @@ class Relatorios():
     def printCliente(self):
         webbrowser.open("cliente.pdf")
     def geraRelatCliente(self):
+        
         self.c = canvas.Canvas("cliente.pdf")
-
         self.codigoRel = self.codigo_entry.get()
         self.nomeRel = self.nome_entry.get()
         self.foneRel = self.fone_entry.get()
         self.cidadeRel = self.cidade_entry.get()
-
+        
         self.c.setFont("Helvetica-Bold", 24)
         self.c.drawString(200, 790, 'Ficha do Cliente')
-
         self.c.setFont("Helvetica-Bold", 18)
         self.c.drawString(50, 700, 'Codigo: ')
         self.c.drawString(50, 670, 'Nome: ')
         self.c.drawString(50, 630, 'Telefone: ')
         self.c.drawString(50, 600, 'Cidade: ')
-
+        
         self.c.setFont("Helvetica", 18)
         self.c.drawString(150, 700, self.codigoRel)
         self.c.drawString(150, 670, self.nomeRel)
         self.c.drawString(150, 630, self.foneRel)
         self.c.drawString(150, 600, self.cidadeRel)
-
+        
         self.c.rect(20, 720, 550, 200, fill= False, stroke=True)
-
         self.c.showPage()
         self.c.save()
         self.printCliente()
-
+        
 class Funcs():
     def limpa_cliente(self):
         self.codigo_entry.delete(0, END)
@@ -105,6 +103,7 @@ class Funcs():
         self.desconecta_bd()
         self.select_lista()
         self.limpa_cliente()
+
     def deleta_cliente(self):
         self.variaveis()
         self.conecta_bd()
@@ -113,7 +112,7 @@ class Funcs():
         self.desconecta_bd()
         self.limpa_cliente()
         self.select_lista()
-
+        
     def select_lista(self):
         self.listaCli.delete(*self.listaCli.get_children())
         self.conecta_bd()
@@ -122,6 +121,7 @@ class Funcs():
         for i in lista:
             self.listaCli.insert("", END, values=i)
         self.desconecta_bd()
+        
     def busca_cliente(self):
         self.conecta_bd()
         self.listaCli.delete(*self.listaCli.get_children())
@@ -152,6 +152,7 @@ class Application(Funcs, Relatorios):
         self.select_lista()
         self.Menus()
         root.mainloop()
+        
     def tela(self):
         self.root.title("Cadastro de Clientes")
         self.root.configure(background= '#1e3743')
@@ -159,6 +160,7 @@ class Application(Funcs, Relatorios):
         self.root.resizable(True, True)
         self.root.maxsize(width= 900, height= 700)
         self.root.minsize(width=500, height= 400)
+        
     def frames_da_tela(self):
         self.frame_1 = Frame(self.root, bd = 4, bg= '#dfe3ee',
                              highlightbackground= '#759fe6', highlightthickness=3 )
@@ -167,6 +169,7 @@ class Application(Funcs, Relatorios):
         self.frame_2 = Frame(self.root, bd=4, bg='#dfe3ee',
                              highlightbackground='#759fe6', highlightthickness=3)
         self.frame_2.place(relx=0.02, rely=0.5, relwidth=0.96, relheight=0.46)
+        
     def widgets_frame1(self):
         self.canvas_bt = Canvas(self.frame_1, bd=0, bg='#1e3743', highlightbackground = 'gray',
             highlightthickness=5)
@@ -228,6 +231,7 @@ class Application(Funcs, Relatorios):
 
         self.cidade_entry = Entry(self.frame_1)
         self.cidade_entry.place(relx=0.5, rely=0.7, relwidth=0.4)
+        
     def lista_frame2(self):
         self.listaCli = ttk.Treeview(self.frame_2, height=3,
                                      column=("col1", "col2", "col3", "col4"))
