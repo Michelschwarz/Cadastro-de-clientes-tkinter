@@ -8,7 +8,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import SimpleDocTemplate, Image
 import webbrowser
 from PIL import ImageTk , Image
-
+        
 root = Tk()
 
 class Relatorios():
@@ -74,11 +74,15 @@ class Funcs():
         self.fone = self.fone_entry.get()
         self.cidade = self.cidade_entry.get()
     def OnDoubleClick(self, event):
-        self.limpa_cliente()
         selected_item = self.listaCli.selection()
 
         for n in selected_item:
             col1, col2, col3, col4 = self.listaCli.item(n, 'values')
+            self.codigo_entry.delete(0, END)
+            self.nome_entry.delete(0, END)
+            self.fone_entry.delete(0, END)
+            self.cidade_entry.delete(0, END)
+
             self.codigo_entry.insert(END, col1)
             self.nome_entry.insert(END, col2)
             self.fone_entry.insert(END, col3)
@@ -88,12 +92,23 @@ class Funcs():
         self.variaveis()
         self.conecta_bd()
 
-        self.cursor.execute(""" INSERT INTO clientes (nome_cliente, telefone, cidade)
-            VALUES (?, ?, ?)""", (self.nome, self.fone, self.cidade))
+        # Obtém o último código de cliente inserido
+        last_code = self.cursor.execute("SELECT MAX(cod) FROM clientes").fetchone()[0]
+
+        # Se não houver clientes ainda, atribui 1 ao código
+        if last_code is None:
+            new_code = 1
+        else:
+            new_code = last_code + 1
+
+        # Insere o novo cliente com o novo código
+        self.cursor.execute(""" INSERT INTO clientes (cod, nome_cliente, telefone, cidade)
+            VALUES (?, ?, ?, ?)""", (new_code, self.nome, self.fone, self.cidade))
         self.conn.commit()
         self.desconecta_bd()
         self.select_lista()
-        self.limpa_cliente()
+        self.limpa_cliente()  
+
     def altera_cliente(self):
         self.variaveis()
         self.conecta_bd()
@@ -121,6 +136,7 @@ class Funcs():
         for i in lista:
             self.listaCli.insert("", END, values=i)
         self.desconecta_bd()
+
     def busca_cliente(self):
         self.conecta_bd()
         self.listaCli.delete(*self.listaCli.get_children())
